@@ -19,8 +19,9 @@ import sklearn.feature_extraction"""
 
 def assess_region(conn, start_date, end_date, region_type, region_name):
     """Load the data from access and ensure missing values are correctly encoded as well as indices correct, column names informative, date and times correctly formatted. Return a structured data structure such as a data frame."""
+    print('Loading data from the sql database...')
     region = access.region_data(conn, start_date, end_date, region_type, region_name)
-
+    print(f'Loaded {region} from the database. Assessing...')
     required_columns = ['price', 'latitude', 'longitude', 'postcode', 'postcode_area', 'postcode_district']
     try: 
         for col in required_columns:
@@ -34,22 +35,23 @@ def assess_region(conn, start_date, end_date, region_type, region_name):
         
     except Exception as e:
         print(f'The following exception has arised when checking data: \n{e}')
-
+    print('Assessment is finished.')
     return region
 
 def assess_pois(sample, tags):
+    print(f'Loading pois for given sample...')
     pois_df = opm.get_pois_stats(sample['longitude'], sample['latitude'], tags)
+    print(f'Loaded all points. Computing stats...')
     for tag in tags.keys():
         pois_df[tag].fillna(0)
         assert pd.to_numeric(pois_df[tag], errors='coerce').notnull().any()
 
     pois_df['total_pois'] = pois_df[list(tags.keys())].sum(axis=1)
-
+    print(f'Stats computed.')
     return pois_df
 
 
-def query_map(conn, start_date, end_date, region_type, region_name, region_map):
-    region = assess_region(conn, start_date, end_date, region_type, region_name)
+def query_map(region, region_map):
     geometry = gpd.points_from_xy(region.longitude, region.latitude)
     region_gdf = gpd.GeoDataFrame(region, geometry=geometry)
     region_gdf.crs = 'EPSG:4326'

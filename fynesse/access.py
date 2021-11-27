@@ -82,7 +82,7 @@ def load_postcode_data(conn, postcode_url):
     request_url(postcode_url, './data/postcode.csv.zip')
     extract_file('./data/postcode.csv.zip', './data/postcode.csv')
     sql.load_csv(conn, './data/postcode.csv', 'postcode_data')
-    
+
 def load_london_wards(url):
     request_url(url, './data/london-wards.zip')
     extract_file('./data/london-wards.zip', './data/')
@@ -91,6 +91,7 @@ def region_data(conn, start_date, end_date, region_type, region_name):
     return sql.join_by_region(conn, start_date, end_date, region_type, region_name)
 
 def map_data(file):
+    print(f'Reading map data from file {file}...')
     return gpd.read_file(file)
 
 def main():
