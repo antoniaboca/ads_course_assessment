@@ -63,7 +63,7 @@ def get_count(conn, table):
         return rows
 
 def join_by_region(conn, start_date, end_date, region_type=None, region_name=None):
-        format = "%Y-%m-d"
+        format = "%Y-%m-%d"
         try:
             datetime.datetime.strptime(start_date, format) and datetime.datetime.strptime(end_date, format)
         except ValueError:
