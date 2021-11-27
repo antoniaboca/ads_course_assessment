@@ -18,16 +18,18 @@ from setuptools import find_packages, setup, Command
 
 # Package meta-data.
 NAME = "fynesse"
-DESCRIPTION = "Template files for performing fynesse pipeline data analysis with python."
-URL = "https://github.com/lawrennd/fynesse_template"
-EMAIL = "emal@domain.here"
-AUTHOR = "Givenname Familyname"
+DESCRIPTION = "Data analysis for predicting UK housing prices following the fynesse template"
+URL = "https://github.com/antoniaboca/ads_course_assessment"
+EMAIL = "aib36@cam.ac.uk"
+AUTHOR = "Antonia Boca"
 REQUIRES_PYTHON = ">=3.6.0"
 VERSION = "0.1.0"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    "pandas", "numpy", "jupyter", "matplotlib", 
+    "pandas", "numpy", "jupyter", "matplotlib",
+    "osmnx", "geopandas", "pymysql", "PyYAML",
+    "ipywidgets"
 ]
 
 # What packages are optional?
