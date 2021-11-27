@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from .config import *
 
 import access
-from .access import opm, sql, schemas
+from access_scripts import opm, sql, schemas
 """These are the types of import we might expect in this file
 import pandas
 import bokeh
@@ -93,7 +93,7 @@ def get_price_correlation(sample, tags):
     for tag in tags.keys():
         corrs[tag] = merged['price'].corr(merged[''])
   
-  
+
 def query(data):
     """Request user input for some aspect of the data."""
     raise NotImplementedError

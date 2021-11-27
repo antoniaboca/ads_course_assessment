@@ -7,8 +7,8 @@ import yaml
 from ipywidgets import interact_manual, Text, Password
 
 from .config import *
-from .access import sql
-from .access.schemas import GOV_COLUMNS, PP_DATA_SCHEMA, POSTCODE_DATA_SCHEMA, DATABASE_CREATE
+from access_scripts import sql
+from access_scripts.schemas import GOV_COLUMNS, PP_DATA_SCHEMA, POSTCODE_DATA_SCHEMA, DATABASE_CREATE
 
 # This file accesses the data
 
@@ -93,3 +93,5 @@ def main():
     load_gov_data(conn, "http://prod2.publicdata.landregistry.gov.uk.s3-website-eu-west-1.amazonaws.com/")
     load_postcode_data(conn, "https://www.getthedata.com/downloads/open_postcode_geo.csv.zip")
     load_london_wards("https://data.london.gov.uk/download/statistical-gis-boundary-files-london/9ba8c833-6370-4b11-abdc-314aa020d5e0/statistical-gis-boundaries-london.zip")
+
+main()
