@@ -88,12 +88,10 @@ def show_average_bar(data, avg_column='price', group_by='postcode_area'):
     ax.set_title(f'Average {avg_column} grouped by {group_by}')
     grouped.plot(kind='bar', ax=ax)
 
-def get_price_correlation(sample, tags):
-    pois_df = opm.get_pois_stats(sample['longitude'], sample['latitude'], tags)
-    merged = pd.concat([sample, pois_df], axis=1)
+def get_price_correlation(sample, pois_df, tags):
     corrs = {}
     for tag in tags.keys():
-        corrs[tag] = merged['price'].corr(merged[''])
+        corrs[tag] = sample['price'].corr(pois_df[tag])
   
 
 def query(data):
