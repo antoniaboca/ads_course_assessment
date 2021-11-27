@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 from .config import *
 
-import access
-from access_scripts import opm, sql, schemas
+import fynesse.access as access
+from fynesse.access_scripts import opm, sql, schemas
 """These are the types of import we might expect in this file
 import pandas
 import bokeh

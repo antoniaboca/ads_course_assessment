@@ -7,8 +7,8 @@ import yaml
 from ipywidgets import interact_manual, Text, Password
 
 from .config import *
-from access_scripts import sql
-from access_scripts.schemas import GOV_COLUMNS, PP_DATA_SCHEMA, POSTCODE_DATA_SCHEMA, DATABASE_CREATE
+from fynesse.access_scripts import sql
+from fynesse.access_scripts.schemas import GOV_COLUMNS, PP_DATA_SCHEMA, POSTCODE_DATA_SCHEMA, DATABASE_CREATE
 
 # This file accesses the data
 
