@@ -5,12 +5,35 @@ import pandas as pd
 import geopandas as gpd
 import yaml
 from ipywidgets import interact_manual, Text, Password
+import pymysql
 
 from .config import *
 from fynesse.access_scripts import sql
 from fynesse.access_scripts.schemas import GOV_COLUMNS, PP_DATA_SCHEMA, POSTCODE_DATA_SCHEMA, DATABASE_CREATE
 
 # This file accesses the data
+def create_connection(user, password, host, database, port=3306):
+        """ Create a database connection to the MariaDB database
+            specified by the host url and database name.
+        :param user: username
+        :param password: password
+        :param host: host url
+        :param database: database
+        :param port: port number
+        :return: Connection object or None
+        """
+        conn = None
+        try:
+            conn = pymysql.connect(user=user,
+                                passwd=password,
+                                host=host,
+                                port=port,
+                                local_infile=1,
+                                db=database
+                                )
+        except Exception as e:
+            print(f"Error connecting to the MariaDB Server: {e}")
+        return conn
 
 def read_credentials():
     with open("credentials.yaml") as file:
@@ -76,10 +99,10 @@ def main():
     username, password = read_credentials()
     url = database_details['url']
 
-    conn = sql.create_connection(username, password, url, None)
-    sql.create_database(conn)
+    conn = create_connection(username, password, url, None)
+    create_database(conn)
 
-    conn = sql.create_connection(username, password, url, 'property_prices')
+    conn = create_connection(username, password, url, 'property_prices')
     create_pp_data(conn)
     create_postcode_data(conn)
     load_gov_data(conn, "http://prod2.publicdata.landregistry.gov.uk.s3-website-eu-west-1.amazonaws.com/")

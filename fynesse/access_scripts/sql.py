@@ -56,28 +56,6 @@ def delete_table(conn, table):
         query = "DELETE FROM {}".format(table)
         return execute_query(conn, query)
 
-def create_connection(user, password, host, database, port=3306):
-        """ Create a database connection to the MariaDB database
-            specified by the host url and database name.
-        :param user: username
-        :param password: password
-        :param host: host url
-        :param database: database
-        :param port: port number
-        :return: Connection object or None
-        """
-        conn = None
-        try:
-            conn = pymysql.connect(user=user,
-                                passwd=password,
-                                host=host,
-                                port=port,
-                                local_infile=1,
-                                db=database
-                                )
-        except Exception as e:
-            print(f"Error connecting to the MariaDB Server: {e}")
-        return conn
     
 def get_count(conn, table):
         query = """SELECT COUNT(*) FROM property_prices.{}""".format(table)
