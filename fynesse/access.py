@@ -12,14 +12,6 @@ from fynesse.access_scripts.schemas import GOV_COLUMNS, PP_DATA_SCHEMA, POSTCODE
 
 # This file accesses the data
 
-@interact_manual(username=Text(description="Username:"), 
-                 password=Password(description="Password:"))
-def write_credentials(username, password):
-    with open("credentials.yaml", "w") as file:
-        credentials_dict = {'username': username, 
-                            'password': password}
-        yaml.dump(credentials_dict, file)
-
 def read_credentials():
     with open("credentials.yaml") as file:
         credentials = yaml.safe_load(file)
