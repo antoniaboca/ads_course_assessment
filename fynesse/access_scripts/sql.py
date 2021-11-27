@@ -2,7 +2,7 @@ import pandas as pd
 import pymysql
 import datetime
 
-from schemas import JOIN_COLUMNS
+from fynesse.access_scripts.schemas import JOIN_COLUMNS
 
 regions = ['locality', 'town_city', 'district', 'county', 'country']
 
