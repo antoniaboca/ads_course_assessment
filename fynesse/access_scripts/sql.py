@@ -45,7 +45,7 @@ def load_csv(conn, file, table):
                     """.format(file, table)
     rows = execute_query(conn, query)
 
-def load_from_head(conn, table, limit):
+def load_from_head(conn, table, limit=5):
     query = """
         SELECT * from {} LIMIT {}
         """.format(table, limit)

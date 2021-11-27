@@ -75,13 +75,14 @@ def load_gov_data(conn, gov_url):
                 break
             print('Found {} entries for year {}'.format(len(year_data), year))
             year_data.to_csv('gov.csv')
-            sql.load_csv_to_sql(conn, 'gov.uk', 'pp_data')
+            sql.load_csv(conn, 'gov.uk', 'pp_data')
             print(f'Loaded {year} to SQL table `pp_data`')
 
-def load_postcode_data(postcode_url):
+def load_postcode_data(conn, postcode_url):
     request_url(postcode_url, './data/postcode.csv.zip')
     extract_file('./data/postcode.csv.zip', './data/postcode.csv')
-
+    sql.load_csv(conn, './data/postcode.csv', 'postcode_data')
+    
 def load_london_wards(url):
     request_url(url, './data/london-wards.zip')
     extract_file('./data/london-wards.zip', './data/')
