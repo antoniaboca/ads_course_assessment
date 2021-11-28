@@ -81,7 +81,7 @@ def show_boxplot(data, column='price', grouped=None, log_scale=True, figsize=(8,
     if log_scale:
         values[column] = np.log(values[column])
     if grouped is not None:
-        values = data.groupby(grouped)
+        values = values.groupby(grouped)
     values.boxplot(column=column, figsize=figsize, subplots=False)
 
 def show_average_bar(data, avg_column='price', group_by='postcode_area'):
