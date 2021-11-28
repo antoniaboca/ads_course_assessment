@@ -22,7 +22,7 @@ def get_pois_stats(longs, lats, tags):
             for tag in tags:
                 if tag in pois.columns:
                     n_pois = pois[pois[tag].notnull()]
-                    if not n_pois.empty():
+                    if not n_pois.empty:
                         filtered[tag] = len(n_pois)
             per_house.append(filtered)
         return pd.DataFrame(per_house)
