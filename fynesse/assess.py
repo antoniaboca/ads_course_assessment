@@ -62,7 +62,7 @@ def query_map(region, region_map):
     return region_joined, map_df
 
 
-def show_average_map(region_joined, map_df, group_col='NAME', avg_column='price', log_scale=True):
+def show_average_map(region_joined, map_df, group_col='NAME', avg_column='price', log_scale=True, figsize=(20,15)):
     if log_scale:
         log_joined = region_joined.copy()
         log_joined[avg_column] = np.log(log_joined[avg_column])
@@ -71,15 +71,18 @@ def show_average_map(region_joined, map_df, group_col='NAME', avg_column='price'
     grouped = region_joined.groupby(group_col)[avg_column].mean()
     avg_val = map_df.join(grouped, on=group_col)
     fig, ax = plt.subplots()
-    fig.set_size_inches(w=20, h=15)
+    w, h = figsize
+    fig.set_size_inches(w=w, h=h)
     ax.set_title(f"Average {'log scale ' if log_scale else ''}{avg_column} in the region.")
     avg_val.plot(column=avg_column, ax=ax, legend=True)
 
-def show_boxplot(data, column='price', grouped=None):
-    values = data
+def show_boxplot(data, column='price', grouped=None, log_scale=True, figsize=(8,10)):
+    values = data.copy()
+    if log_scale:
+        values[column] = np.log(values[column])
     if grouped is not None:
         values = data.groupby(grouped)
-    values.boxplot(column=column, figsize=(8,10), subplots=False)
+    values.boxplot(column=column, figsize=figsize, subplots=False)
 
 def show_average_bar(data, avg_column='price', group_by='postcode_area'):
     grouped = data.groupby(group_by)[avg_column].mean()
