@@ -13,7 +13,7 @@ def pick_features(data, columns=['longitude', 'latitude']):
   print(f'Picking features: {columns}...')
   
   features = data[columns]
-  assert not features.isnull().any()
+  assert not features.isnull().values.any()
 
   return np.array(features.values, dtype=float)
 
