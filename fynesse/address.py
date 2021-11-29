@@ -20,7 +20,7 @@ def pick_features(data, columns=['longitude', 'latitude']):
 def pick_response(data, column='price'):
   return np.array(data[column].values, dtype=float)
 
-def train_validation_split(data, test_size=0.2, tags=['longitude', 'latitude']):
+def train_validation_split(data, tags=['longitude', 'latitude'], test_size=0.2):
   print(f'Spliting data into training and validation with test size: {test_size}...')
   x_train, x_test, y_train, y_test = train_test_split(pick_features(data, tags), pick_response(data), test_size=test_size, random_state=0)
   return x_train, x_test, y_train, y_test
