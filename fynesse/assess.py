@@ -7,22 +7,10 @@ import matplotlib.pyplot as plt
 from .config import *
 
 import fynesse.access as access
-from fynesse.access_scripts import opm, sql, schemas
-"""These are the types of import we might expect in this file
-import pandas
-import bokeh
-import matplotlib.pyplot as plt
-import sklearn.decomposition as decomposition
-import sklearn.feature_extraction"""
 
-"""Place commands in this file to assess the data you have downloaded. How are missing values encoded, how are outliers encoded? What do columns represent, makes rure they are correctly labeled. How is the data indexed. Crete visualisation routines to assess the data (e.g. in bokeh). Ensure that date formats are correct and correctly timezoned."""
-
-def assess_region(conn, start_date, end_date, region_type, region_name):
-    """Load the data from access and ensure missing values are correctly encoded as well as indices correct, column names informative, date and times correctly formatted. Return a structured data structure such as a data frame."""
-    print('Loading data from the sql database...')
-    region = access.region_data(conn, start_date, end_date, region_type, region_name)
-    print(f'Loaded {region} from the database. Assessing...')
-    required_columns = ['price', 'latitude', 'longitude', 'postcode', 'postcode_area', 'postcode_district']
+def assess_houses(region):
+    print(f'Assessing dataframe...')
+    required_columns = ['price', 'date_of_transfer', 'property_type', 'latitude', 'longitude', 'postcode', 'postcode_area', 'postcode_district']
     try: 
         for col in required_columns:
             assert not region[col].isnull().any()
@@ -38,18 +26,15 @@ def assess_region(conn, start_date, end_date, region_type, region_name):
     print('Assessment is finished.')
     return region
 
-def assess_pois(sample, tags):
-    print(f'Loading pois for given sample...')
-    pois_df = opm.get_pois_stats(sample['longitude'], sample['latitude'], tags)
-    print(f'Loaded all points. Computing stats...')
+def assess_pois(pois_df, tags):
+    print(f'Assess pois and compute total pois...')
     for tag in tags.keys():
-        pois_df[tag] = pois_df[tag].fillna(0)
+        assert tag in pois_df.columns
         assert pd.to_numeric(pois_df[tag], errors='coerce').notnull().any()
 
     pois_df['total_pois'] = pois_df[list(tags.keys())].sum(axis=1)
     print(f'Stats computed.')
     return pois_df
-
 
 def query_map(region, region_map):
     geometry = gpd.points_from_xy(region.longitude, region.latitude)

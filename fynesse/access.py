@@ -8,20 +8,11 @@ from ipywidgets import interact_manual, Text, Password
 import pymysql
 
 from .config import *
-from fynesse.access_scripts import sql
+from fynesse.access_scripts import sql, opm
 from fynesse.access_scripts.schemas import GOV_COLUMNS, PP_DATA_SCHEMA, POSTCODE_DATA_SCHEMA, DATABASE_CREATE
 
 # This file accesses the data
 def create_connection(user, password, host, database, port=3306):
-        """ Create a database connection to the MariaDB database
-            specified by the host url and database name.
-        :param user: username
-        :param password: password
-        :param host: host url
-        :param database: database
-        :param port: port number
-        :return: Connection object or None
-        """
         conn = None
         try:
             conn = pymysql.connect(user=user,
@@ -63,20 +54,20 @@ def create_postcode_data(conn):
         return rows
 
 def load_gov_data(conn, gov_url):
-        for year in range(2021, 1930, -1):
-            file = "pp-" + str(year) + ".csv"
-            year_data = pd.DataFrame()
-            try:
-                print(gov_url + file)
-                year_data = pd.read_csv(gov_url + file, header=None)
-                year_data.columns = GOV_COLUMNS
-            except:
-                # we assume that if part data doesn't exist for year x, then it doesn't exist for x-1 
-                break
-            print('Found {} entries for year {}'.format(len(year_data), year))
-            year_data.to_csv('gov.csv')
-            sql.load_csv(conn, 'gov.uk', 'pp_data')
-            print(f'Loaded {year} to SQL table `pp_data`')
+    for year in range(2021, 1930, -1):
+        file = "pp-" + str(year) + ".csv"
+        year_data = pd.DataFrame()
+        try:
+            print(gov_url + file)
+            year_data = pd.read_csv(gov_url + file, header=None)
+            year_data.columns = GOV_COLUMNS
+        except:
+            # we assume that if part data doesn't exist for year x, then it doesn't exist for x-1 
+            break
+        print('Found {} entries for year {}'.format(len(year_data), year))
+        year_data.to_csv('gov.csv')
+        sql.load_csv(conn, 'gov.uk', 'pp_data')
+        print(f'Loaded {year} to SQL table `pp_data`')
 
 def load_postcode_data(conn, postcode_url):
     request_url(postcode_url, './data/postcode.csv.zip')
@@ -90,24 +81,17 @@ def load_london_wards(url):
 def region_data(conn, start_date, end_date, region_type, region_name):
     return sql.join_by_region(conn, start_date, end_date, region_type, region_name)
 
+def box_data(conn, box, start_date, end_date, property_type):
+    rows = sql.join_bounding_box(conn, box, start_date, end_date, property_type)
+    sql.update_prices_coordinates_data(conn, rows)
+    return sql.bounding_box_data(conn, box, start_date, end_date, property_type)
+
+def pois_data(sample, tags, len=0.05):
+    print(f'Loading all points from OpenStreetMap...')
+    pois_df = opm.get_pois_stats(sample['longitude'], sample['latitude'], tags, len)
+    print(f'Loaded all points.')
+    return pois_df
+
 def map_data(file):
     print(f'Reading map data from file {file}...')
     return gpd.read_file(file)
-
-def main():
-    database_details = {"url": "assessment-mariadb.c0qk4q5ftzh1.eu-west-2.rds.amazonaws.com", 
-                    "port": 3306}
-    
-    username, password = read_credentials()
-    url = database_details['url']
-
-    conn = create_connection(username, password, url, None)
-    create_database(conn)
-
-    conn = create_connection(username, password, url, 'property_prices')
-    create_pp_data(conn)
-    create_postcode_data(conn)
-    load_gov_data(conn, "http://prod2.publicdata.landregistry.gov.uk.s3-website-eu-west-1.amazonaws.com/")
-    load_postcode_data(conn, "https://www.getthedata.com/downloads/open_postcode_geo.csv.zip")
-    load_london_wards("https://data.london.gov.uk/download/statistical-gis-boundary-files-london/9ba8c833-6370-4b11-abdc-314aa020d5e0/statistical-gis-boundaries-london.zip")
-

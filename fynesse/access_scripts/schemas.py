@@ -119,6 +119,10 @@ PP_COLUMNS = ['csv_index',
            'record_status',
            'db_id']
 
+PRICE_PROP_COLUMNS = ['price', 'date_of_transfer', 'postcode', 'property_type', 
+                      'new_build_flag', 'tenure_type', 'locality', 'town_city', 'district',
+                      'county', 'country', 'latitude', 'longitude']
+
 POSTCODE_COLUMNS = ['postcode',
                'status',
                'usertype',
@@ -138,7 +142,8 @@ POSTCODE_COLUMNS = ['postcode',
                'incode']
 
 POSTCODE_SQL_COLUMNS = POSTCODE_COLUMNS.append('db_id')
-
+PRICE_PROP_SQL_COLUMNS = PRICE_PROP_COLUMNS.append('db_id')
+ 
 JOIN_COLUMNS = [
     'price', 
     'property_type', 
