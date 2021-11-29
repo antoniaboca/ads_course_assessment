@@ -10,7 +10,7 @@ import fynesse.access as access
 
 def assess_houses(region):
     print(f'Assessing dataframe...')
-    required_columns = ['price', 'date_of_transfer', 'property_type', 'latitude', 'longitude', 'postcode', 'postcode_area', 'postcode_district']
+    required_columns = ['price', 'date_of_transfer', 'property_type', 'latitude', 'longitude', 'postcode']
     try: 
         for col in required_columns:
             assert not region[col].isnull().any()
