@@ -123,6 +123,10 @@ PRICE_PROP_COLUMNS = ['price', 'date_of_transfer', 'postcode', 'property_type',
                       'new_build_flag', 'tenure_type', 'locality', 'town_city', 'district',
                       'county', 'country', 'latitude', 'longitude']
 
+PRICE_PROP_COLUMNS = ['price', 'date_of_transfer', 'postcode', 'property_type', 
+                      'new_build_flag', 'tenure_type', 'locality', 'town_city', 'district',
+                      'county', 'country', 'latitude', 'longitude', 'db_id']
+
 POSTCODE_COLUMNS = ['postcode',
                'status',
                'usertype',
@@ -141,11 +145,28 @@ POSTCODE_COLUMNS = ['postcode',
                'outcode',
                'incode']
 
-POSTCODE_SQL_COLUMNS = POSTCODE_COLUMNS.append('db_id')
-PRICE_PROP_SQL_COLUMNS = PRICE_PROP_COLUMNS.append('db_id')
- 
+POSTCODE_SQL_COLUMNS = ['postcode',
+               'status',
+               'usertype',
+               'easting',
+               'northing',
+               'positional_quality_indicator',
+               'country',
+               'latitude',
+               'longitude',
+               'postcode_no_space',
+               'postcode_fixed_width_seven',
+               'postcode_fixed_width_eight',
+               'postcode_area',
+               'postcode_district',
+               'postcode_sector',
+               'outcode',
+               'incode',
+               'db_id']
+
 JOIN_COLUMNS = [
     'price', 
+    'date_of_transfer',
     'property_type', 
     'new_build_flag', 
     'postcode_area', 

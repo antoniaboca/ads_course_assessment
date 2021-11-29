@@ -22,7 +22,7 @@ def assess_houses(region):
             assert uniq in prop_types
         
     except Exception as e:
-        print(f'The following exception has arised when checking data: \n{e}')
+        raise e
     print('Assessment is finished.')
     return region
 
