@@ -43,7 +43,7 @@ def assess_pois(sample, tags):
     pois_df = opm.get_pois_stats(sample['longitude'], sample['latitude'], tags)
     print(f'Loaded all points. Computing stats...')
     for tag in tags.keys():
-        pois_df[tag].fillna(0)
+        pois_df[tag] = pois_df[tag].fillna(0)
         assert pd.to_numeric(pois_df[tag], errors='coerce').notnull().any()
 
     pois_df['total_pois'] = pois_df[list(tags.keys())].sum(axis=1)
@@ -95,7 +95,7 @@ def get_price_correlation(sample, pois_df, tags):
     corrs = {}
     for tag in tags.keys():
         corrs[tag] = sample['price'].corr(pois_df[tag])
-  
+    return corrs
 
 def query(data):
     """Request user input for some aspect of the data."""
