@@ -14,10 +14,10 @@ def get_pois_for_house(long, lat, tags, len=0.005):
         pois = ox.geometries_from_bbox(north, south, east, west, tags)
         return pois
 
-def get_pois_stats(longs, lats, tags, len=0.005):
+def get_pois_stats(longs, lats, tags, length=0.005):
     per_house = []
     for long, lat in zip(longs, lats):
-        pois = get_pois_for_house(long, lat, tags, len)
+        pois = get_pois_for_house(long, lat, tags, length)
         filtered = {}
         for tag in tags:
             if tag in pois.columns:
