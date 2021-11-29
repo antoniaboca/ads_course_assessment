@@ -123,7 +123,7 @@ PRICE_PROP_COLUMNS = ['price', 'date_of_transfer', 'postcode', 'property_type',
                       'new_build_flag', 'tenure_type', 'locality', 'town_city', 'district',
                       'county', 'country', 'latitude', 'longitude']
 
-PRICE_PROP_COLUMNS = ['price', 'date_of_transfer', 'postcode', 'property_type', 
+PRICE_PROP_SQL_COLUMNS = ['price', 'date_of_transfer', 'postcode', 'property_type', 
                       'new_build_flag', 'tenure_type', 'locality', 'town_city', 'district',
                       'county', 'country', 'latitude', 'longitude', 'db_id']
 
