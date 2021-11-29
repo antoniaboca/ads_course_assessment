@@ -68,9 +68,10 @@ def predict_price(conn, latitude, longitude, date, property_type):
 
     print(f'Validate the model...')
     predict = model.get_prediction(x_test).summary_frame(alpha=0.5)
-    print(f'Average difference: {(abs(predict - y_test)).mean()}')
-    print(f'Maximum difference: {(abs(predict - y_test)).min()}')
-    print(f'Minimum difference: {(abs(predict - y_test)).min()}')
+    y_pred = predict['mean']
+    print(f'Average difference: {(np.abs(y_pred - y_test)).mean()}')
+    print(f'Maximum difference: {(np.abs(y_pred - y_test)).max()}')
+    print(f'Minimum difference: {(np.abs(y_pred - y_test)).min()}')
 
     print(f'Predicting price for house...')
     x_df = pd.DataFrame({'longitude': [longitude], 'latitude': [latitude]})
