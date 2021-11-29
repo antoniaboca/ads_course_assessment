@@ -86,9 +86,9 @@ def box_data(conn, box, start_date, end_date, property_type):
     sql.update_prices_coordinates_data(conn, rows)
     return sql.bounding_box_data(conn, box, start_date, end_date, property_type)
 
-def pois_data(sample, tags, len=0.05):
+def pois_data(sample, tags, length=0.005):
     print(f'Loading all points from OpenStreetMap...')
-    pois_df = opm.get_pois_stats(sample['longitude'], sample['latitude'], tags, len)
+    pois_df = opm.get_pois_stats(sample['longitude'], sample['latitude'], tags, length)
     print(f'Loaded all points.')
     return pois_df
 

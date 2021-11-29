@@ -1,9 +1,9 @@
 import osmnx as ox
 import pandas as pd
 
-def get_pois_for_house(long, lat, tags, len=0.005):
-        box_width = len
-        box_height = len
+def get_pois_for_house(long, lat, tags, length=0.005):
+        box_width = length
+        box_height = length
         longitude = float(long)
         latitude = float(lat)
         north = latitude + box_height/2.0
