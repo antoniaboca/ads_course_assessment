@@ -11,7 +11,8 @@ from ipywidgets import interact_manual, Text, Password
 
 from .config import *
 from fynesse.access_scripts import sql, opm
-from fynesse.access_scripts.schemas import GOV_COLUMNS, PP_DATA_SCHEMA, POSTCODE_DATA_SCHEMA, DATABASE_CREATE, PRICES_COORDINATES_DATA_SCHEMA
+from fynesse.access_scripts.schemas import GOV_COLUMNS, POSTCODE_COLUMNS, PP_DATA_SCHEMA, POSTCODE_DATA_SCHEMA, DATABASE_CREATE, PRICES_COORDINATES_DATA_SCHEMA
+from fynesse.access_scripts.schemas import PP_COLUMNS, POSTCODE_SQL_COLUMNS, PRICE_PROP_SQL_COLUMNS
 
 # This file accesses the data
 def create_connection(user, password, host, database, port=3306):
@@ -54,6 +55,10 @@ def create_postcode_data(conn):
         rows = sql.execute_query(conn, POSTCODE_DATA_SCHEMA)
         return rows
 
+def create_prices_coordinates_data(conn):
+    rows = sql.execute_query(conn, PRICES_COORDINATES_DATA_SCHEMA)
+    return rows
+
 def load_gov_data(conn, gov_url):
     for year in range(2021, 1930, -1):
         file = "pp-" + str(year) + ".csv"
@@ -74,6 +79,20 @@ def load_postcode_data(conn, postcode_url):
     request_url(postcode_url, './data/postcode.csv.zip')
     extract_file('./data/postcode.csv.zip', './data/postcode.csv')
     sql.load_csv(conn, './data/postcode.csv', 'postcode_data')
+
+def table_head(conn, table_name):
+    columns = []
+    if table_name == 'pp_data':
+        columns = PP_COLUMNS
+        return pd.DataFrame(sql.load_from_head(conn, table_name), columns=columns)
+    elif table_name == 'postcode_data':
+        columns = POSTCODE_SQL_COLUMNS
+        return pd.DataFrame(sql.load_from_head(conn, table_name), columns=columns)
+    elif table_name == 'prices_coordinates_data':
+        columns = PRICE_PROP_SQL_COLUMNS
+        return pd.DataFrame(sql.load_from_head(conn, table_name), columns=columns)
+    
+    return pd.DataFrame(sql.load_from_head(conn, table_name))
 
 def load_london_wards(url):
     request_url(url, './data/london-wards.zip')

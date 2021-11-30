@@ -82,14 +82,3 @@ def get_price_correlation(sample, pois_df, tags):
         corrs[tag] = sample['price'].corr(pois_df[tag])
     return corrs
 
-def query(data):
-    """Request user input for some aspect of the data."""
-    raise NotImplementedError
-
-def view(data):
-    """Provide a view of the data that allows the user to verify some aspect of its quality."""
-    raise NotImplementedError
-
-def labelled(data):
-    """Provide a labelled set of data ready for supervised learning."""
-    raise NotImplementedError
