@@ -76,9 +76,9 @@ def load_gov_data(conn, gov_url):
         print(f'Loaded {year} to SQL table `pp_data`')
 
 def load_postcode_data(conn, postcode_url):
-    request_url(postcode_url, './data/postcode.csv.zip')
-    extract_file('./data/postcode.csv.zip', './data/postcode.csv')
-    sql.load_csv(conn, './data/postcode.csv', 'postcode_data')
+    request_url(postcode_url, 'postcode.csv.zip')
+    extract_file('postcode.csv.zip', '.')
+    sql.load_csv(conn, 'open_postcode_geo.csv', 'postcode_data')
 
 def table_head(conn, table_name, limit=5):
     columns = []
