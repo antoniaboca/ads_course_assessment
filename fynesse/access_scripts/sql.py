@@ -12,8 +12,8 @@ def execute_query(conn, query):
         aff = cur.execute(query)
         print(f'Affected rows: {aff}')
         rows = cur.fetchall()
-        cur.close()
         conn.commit()
+        cur.close()
         return rows
     
 def database_size(conn):

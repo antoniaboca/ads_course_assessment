@@ -4,8 +4,10 @@ import zipfile
 import pandas as pd
 import geopandas as gpd
 import yaml
-from ipywidgets import interact_manual, Text, Password
 import pymysql
+
+from pymysql.constants import CLIENT
+from ipywidgets import interact_manual, Text, Password
 
 from .config import *
 from fynesse.access_scripts import sql, opm
@@ -20,7 +22,8 @@ def create_connection(user, password, host, database, port=3306):
                                 host=host,
                                 port=port,
                                 local_infile=1,
-                                db=database
+                                db=database,
+                                client_flag=CLIENT.MULTI_STATEMENTS
                                 )
         except Exception as e:
             print(f"Error connecting to the MariaDB Server: {e}")
