@@ -80,19 +80,19 @@ def load_postcode_data(conn, postcode_url):
     extract_file('./data/postcode.csv.zip', './data/postcode.csv')
     sql.load_csv(conn, './data/postcode.csv', 'postcode_data')
 
-def table_head(conn, table_name):
+def table_head(conn, table_name, limit=5):
     columns = []
     if table_name == 'pp_data':
         columns = PP_COLUMNS
-        return pd.DataFrame(sql.load_from_head(conn, table_name), columns=columns)
+        return pd.DataFrame(sql.load_from_head(conn, table_name, limit), columns=columns)
     elif table_name == 'postcode_data':
         columns = POSTCODE_SQL_COLUMNS
-        return pd.DataFrame(sql.load_from_head(conn, table_name), columns=columns)
+        return pd.DataFrame(sql.load_from_head(conn, table_name, limit), columns=columns)
     elif table_name == 'prices_coordinates_data':
         columns = PRICE_PROP_SQL_COLUMNS
-        return pd.DataFrame(sql.load_from_head(conn, table_name), columns=columns)
+        return pd.DataFrame(sql.load_from_head(conn, table_name, limit), columns=columns)
     
-    return pd.DataFrame(sql.load_from_head(conn, table_name))
+    return pd.DataFrame(sql.load_from_head(conn, table_name, limit))
 
 def load_london_wards(url):
     request_url(url, './data/london-wards.zip')
