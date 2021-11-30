@@ -125,8 +125,7 @@ GOV_COLUMNS = ['transaction_unique_identifier',
            'ppd_category_type',
            'record_status']
 
-PP_COLUMNS = ['csv_index',
-           'transaction_unique_identifier', 
+PP_COLUMNS = ['transaction_unique_identifier', 
            'price', 
            'date_of_transfer', 
            'postcode', 

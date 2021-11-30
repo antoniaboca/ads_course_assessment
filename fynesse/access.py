@@ -67,7 +67,7 @@ def load_gov_data(conn, gov_url):
             break
         print('Found {} entries for year {}'.format(len(year_data), year))
         year_data.to_csv('gov.csv', index=False)
-        sql.load_csv(conn, 'gov.uk', 'pp_data')
+        sql.load_csv(conn, 'gov.csv', 'pp_data')
         print(f'Loaded {year} to SQL table `pp_data`')
 
 def load_postcode_data(conn, postcode_url):
