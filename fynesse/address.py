@@ -28,7 +28,7 @@ def train_validation_split(data, tags=['longitude', 'latitude'], test_size=0.2):
 def get_date_range(date, days=365):
     date_obj = datetime.date.fromisoformat(date)
     end_date = (date_obj - datetime.timedelta(1)).isoformat()
-    start_date = (date_obj - datetime.timedelta(365)).isoformat()
+    start_date = (date_obj - datetime.timedelta(days)).isoformat()
     return (start_date, end_date)
 
 def predict_price(conn, latitude, longitude, date, property_type):

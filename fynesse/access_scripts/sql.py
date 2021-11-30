@@ -16,15 +16,6 @@ def execute_query(conn, query):
         conn.commit()
         return rows
     
-def primary_key_query(table, name):
-        return """
-        ALTER TABLE `{0}`
-            ADD PRIMARY KEY (`{1}`);
-
-        ALTER TABLE `{0}`
-            MODIFY `{1}` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
-        """.format(table, name)
-
 def database_size(conn):
         query = """
         SELECT TABLE_SCHEMA, TABLE_NAME,
@@ -38,12 +29,12 @@ def database_size(conn):
 
 def load_csv(conn, file, table):
     query = """
-                    LOAD DATA LOCAL INFILE '{}' INTO TABLE {}
-                    FIELDS TERMINATED BY ',' 
-                    OPTIONALLY ENCLOSED BY '"'
-                    LINES STARTING BY '' TERMINATED BY '\n'
-                    IGNORE 1 LINES;
-                    """.format(file, table)
+        LOAD DATA LOCAL INFILE '{}' INTO TABLE {}
+        FIELDS TERMINATED BY ',' 
+        OPTIONALLY ENCLOSED BY '"'
+        LINES STARTING BY '' TERMINATED BY '\n'
+        IGNORE 1 LINES;
+        """.format(file, table)
     rows = execute_query(conn, query)
     return rows
 

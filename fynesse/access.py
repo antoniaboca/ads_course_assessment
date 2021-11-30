@@ -9,7 +9,7 @@ import pymysql
 
 from .config import *
 from fynesse.access_scripts import sql, opm
-from fynesse.access_scripts.schemas import GOV_COLUMNS, PP_DATA_SCHEMA, POSTCODE_DATA_SCHEMA, DATABASE_CREATE
+from fynesse.access_scripts.schemas import GOV_COLUMNS, PP_DATA_SCHEMA, POSTCODE_DATA_SCHEMA, DATABASE_CREATE, PRICES_COORDINATES_DATA_SCHEMA
 
 # This file accesses the data
 def create_connection(user, password, host, database, port=3306):
@@ -44,13 +44,11 @@ def create_database(conn):
         return sql.execute_query(conn, DATABASE_CREATE)
 
 def create_pp_data(conn):
-        query = PP_DATA_SCHEMA + sql.primary_key_query('property_prices', 'pp_data')
-        rows = sql.execute_query(conn, query)
+        rows = sql.execute_query(conn, PP_DATA_SCHEMA)
         return rows
 
 def create_postcode_data(conn):
-        query = POSTCODE_DATA_SCHEMA + sql.primary_key_query('property_prices', 'pp_data')
-        rows = sql.execute_query(conn, query)
+        rows = sql.execute_query(conn, POSTCODE_DATA_SCHEMA)
         return rows
 
 def load_gov_data(conn, gov_url):
@@ -65,7 +63,7 @@ def load_gov_data(conn, gov_url):
             # we assume that if part data doesn't exist for year x, then it doesn't exist for x-1 
             break
         print('Found {} entries for year {}'.format(len(year_data), year))
-        year_data.to_csv('gov.csv')
+        year_data.to_csv('gov.csv', index=False)
         sql.load_csv(conn, 'gov.uk', 'pp_data')
         print(f'Loaded {year} to SQL table `pp_data`')
 
