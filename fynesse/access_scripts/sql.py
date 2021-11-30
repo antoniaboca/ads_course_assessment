@@ -2,7 +2,8 @@ import pandas as pd
 import pymysql
 import datetime
 
-from fynesse.access_scripts.schemas import JOIN_COLUMNS, PRICE_PROP_SQL_COLUMNS
+from fynesse.access_scripts.schemas import JOIN_COLUMNS, PRICE_PROP_COLUMNS, PRICE_PROP_SQL_COLUMNS
+
 
 regions = ['locality', 'town_city', 'district', 'county', 'country']
 
@@ -114,7 +115,7 @@ def join_bounding_box(conn, box, start_time, end_time, property_type):
   """
 
   rows = execute_query(conn, query)
-  return pd.DataFrame(rows, columns=PRICE_PROP_SQL_COLUMNS)
+  return pd.DataFrame(rows, columns=PRICE_PROP_COLUMNS)
 
 def update_prices_coordinates_data(conn, df):
   df.to_csv('temp_join.csv', index=False)
