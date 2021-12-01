@@ -33,8 +33,7 @@ def get_date_range(date, days=365):
 
 def predict_price(conn, latitude, longitude, date, property_type):
     start_date, end_date = get_date_range(date)
-    south, north = latitude - 0.05, latitude + 0.05
-    west, east = longitude - 0.04, longitude + 0.04
+    box = assess.get_box(latitude, longitude, 0.01, 0.01)
 
     pois_tags = {'amenity': True,
             'historic': True,
@@ -46,7 +45,7 @@ def predict_price(conn, latitude, longitude, date, property_type):
     feature_tags = ['latitude', 'longitude'] + list(pois_tags.keys())
     
     print(f'Getting house data...')
-    raw = access.box_data(conn, (north, south, west, east), start_date, end_date, property_type)
+    raw = access.box_data(conn, box, start_date, end_date, property_type)
     data = assess.assess_houses(raw)
 
     if len(data) < 40:
