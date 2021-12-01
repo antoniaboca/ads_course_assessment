@@ -57,17 +57,17 @@ def predict_price(conn, latitude, longitude, date, property_type):
     sample = data.sample(min(40, len(data)))
     sample = sample.reset_index()
 
-    print(f'Getting OpenStreetMap features...')
+    print(f'\nGetting OpenStreetMap features...')
     raw_pois = access.pois_data(sample, pois_tags)
     pois_df = assess.assess_pois(raw_pois, pois_tags)
 
     total_data = pd.concat([sample, pois_df], axis=1)
 
-    print(f'Building a model for the region around the house...')
+    print(f'\nBuilding a model for the region around the house...')
     x_train, x_test, y_train, y_test = train_validation_split(total_data, feature_tags, 0.2)
     model = sm.GLM(y_train, x_train, family=sm.families.Poisson()).fit()
 
-    print(f'Validate the model...')
+    print(f'\nValidate the model...')
     predict = model.get_prediction(x_test).summary_frame(alpha=0.5)
     y_pred = predict['mean']
     plt.bar(y_test, label='Real prices')
