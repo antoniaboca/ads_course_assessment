@@ -70,8 +70,12 @@ def predict_price(conn, latitude, longitude, date, property_type):
     print(f'\nValidate the model...')
     predict = model.get_prediction(x_test).summary_frame(alpha=0.5)
     y_pred = predict['mean']
-    plt.bar(range(len(y_test)), y_test, label='Real prices')
-    plt.bar(range(len(y_pred)), y_pred, label='Predicted price.')
+    plt.bar(range(len(y_test)), y_test, label='Real prices', color='cyan')
+    plt.bar(range(len(y_pred)), y_pred, label='Predicted price.', color='red')
+    plt.legend(['Real prices', 'Predicted'])
+    plt.xlabel('Tested house')
+    plt.ylabel('Price in £')
+    plt.show()
 
     print(f'Predicting price for house...')
     x_df = pd.DataFrame({'longitude': [longitude], 'latitude': [latitude]})
