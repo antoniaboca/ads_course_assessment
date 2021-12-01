@@ -82,3 +82,15 @@ def get_price_correlation(sample, pois_df, tags):
         corrs[tag] = sample['price'].corr(pois_df[tag])
     return corrs
 
+
+def draw_correlation(x, y):
+  plt.scatter(x, y)
+  axes = plt.gca()
+  m, b = np.polyfit(x, y, 1)
+  x_plot = np.linspace(axes.get_xlim()[0], axes.get_xlim()[1], 100)
+  plt.plot(x_plot, m * x_plot + b, '-')
+
+def get_box(latitude, longitude, len_lat, len_long):
+    south, north = latitude - len_lat, latitude + len_lat
+    west, east = longitude - len_long, longitude + len_long
+    return (north, south, west, east)

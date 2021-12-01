@@ -115,3 +115,8 @@ def pois_data(sample, tags, length=0.005):
 def map_data(file):
     print(f'Reading map data from file {file}...')
     return gpd.read_file(file)
+
+def get_box(latitude, longitude, len_lat, len_long):
+    south, north = latitude - len_lat, latitude + len_lat
+    west, east = longitude - len_long, longitude + len_long
+    return (north, south, west, east)
