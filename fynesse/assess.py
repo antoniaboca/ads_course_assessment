@@ -30,7 +30,8 @@ def assess_houses(region):
 def assess_pois(pois_df, tags):
     print(f'Assess pois and compute total pois...')
     for tag in tags.keys():
-        assert tag in pois_df.columns
+        if tag not in pois_df.columns:
+            print(f'Could not find {tag} in the pois dataframe.')
         assert pd.to_numeric(pois_df[tag], errors='coerce').notnull().any()
 
     pois_df['total_pois'] = pois_df[list(tags.keys())].sum(axis=1)

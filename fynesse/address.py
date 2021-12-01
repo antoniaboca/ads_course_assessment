@@ -6,7 +6,7 @@ import datetime
 from sklearn.model_selection import train_test_split
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
-
+import matplotlib.pyplot as plt
 from fynesse import assess, access
 
 def pick_features(data, columns=['longitude', 'latitude']):
@@ -51,6 +51,8 @@ def predict_price(conn, latitude, longitude, date, property_type):
 
     if len(data) < 40:
         print(f'WARNING: FEW DATA POINTS. Trying to create model from {len(data)} data points...')
+    if len(data) == 0:
+        print(f'No data points found. Cannot make prediction.')
 
     # reduce data size because of openstreetmap
     sample = data.sample(min(40, len(data)))
@@ -69,9 +71,8 @@ def predict_price(conn, latitude, longitude, date, property_type):
     print(f'Validate the model...')
     predict = model.get_prediction(x_test).summary_frame(alpha=0.5)
     y_pred = predict['mean']
-    print(f'Average difference: {(np.abs(y_pred - y_test)).mean()}')
-    print(f'Maximum difference: {(np.abs(y_pred - y_test)).max()}')
-    print(f'Minimum difference: {(np.abs(y_pred - y_test)).min()}')
+    plt.bar(y_test, label='Real prices')
+    plt.bar(y_pred, label='Predicted price.')
 
     print(f'Predicting price for house...')
     x_df = pd.DataFrame({'longitude': [longitude], 'latitude': [latitude]})
