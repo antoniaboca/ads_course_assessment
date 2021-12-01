@@ -3,6 +3,7 @@ import geopandas as gpd
 from geopandas.tools import sjoin
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import pearsonr
 
 from .config import *
 
@@ -82,13 +83,17 @@ def get_price_correlation(sample, pois_df, tags):
         corrs[tag] = sample['price'].corr(pois_df[tag])
     return corrs
 
-
-def draw_correlation(x, y):
-  plt.scatter(x, y)
-  axes = plt.gca()
+def draw_correlation(x, y, ax, x_name, y_name):
+  ax.scatter(x, y)
   m, b = np.polyfit(x, y, 1)
-  x_plot = np.linspace(axes.get_xlim()[0], axes.get_xlim()[1], 100)
-  plt.plot(x_plot, m * x_plot + b, '-')
+  x_plot = np.linspace(ax.get_xlim()[0], ax.get_xlim()[1], 100)
+  ax.plot(x_plot, m * x_plot + b, '-')
+  corr, p = pearsonr(x, y)
+  title = "Correlation: {:.3f}".format(corr)
+  ax.set_title(title)
+  ax.set_xlabel(x_name)
+  ax.set_ylabel(y_name)
+
 
 def get_box(latitude, longitude, len_lat, len_long):
     south, north = latitude - len_lat, latitude + len_lat
