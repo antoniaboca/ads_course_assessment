@@ -60,4 +60,8 @@ This function builds a model on the fly, using all houses of the same `property_
 6. It validates the model, by plotting the difference between the predicted prices and the actual prices
 7. It return the model and a prediction 
 
-All other functions in this module are functions that implement the steps above. 
+All other functions in this module are functions that implement the steps above.
+
+## Testing
+
+Due to the nature of the task, I have considered unit tests to be unnecessary, as the data and the functions that process it go hand in hand. Writing this fynesse module has been in itself an iterative process, in which edge cases caused by the data itself have appeared at all moments. 
