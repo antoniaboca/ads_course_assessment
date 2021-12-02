@@ -1,4 +1,7 @@
-# Fynesse Structure
+# UK Housing Prices Predictor
+This project is part of the Advanced Data Science Course for Part II of the Computer Science Tripos at the University of Cambridge. This predictor builds a Generalized Linear Model on the fly using coordinate data as well as points of interest around these coordinates from OpenStreetMap to fit the parameters. 
+
+The project structure follows the fynesse template, as seen in the tree below. 
 ```
 fynesse            
 ├─ access_scripts  
@@ -18,13 +21,21 @@ fynesse
 
 ## Access
 
-Gaining access to the data, including overcoming availability challenges (data is distributed across architectures, called from an obscure API, written in log books) as well as legal rights (for example intellectual property rights) and individual privacy rights (such as those provided by the GDPR).
+The `access` module is composed of a main file, called `access.py`, and an additional folder `access_scripts` that contains code for SQL queries to MariaDB and OpenStreetMap queries. In addition, `schemas.py` contains various constants used in these queries, such as column names for SQL tables and table creation code.
 
-It seems a great challenge to automate all the different aspects of the process of data access, but this challenge is underway already through the process of what is commonly called *digital transformation*. The process of digital transformation takes data away from physical log books and into digital devices. But that transformation process itself comes with challenges. 
+Functions in `access_scripts` can be accessed on their own by importing the right module:
+```
+from fynesse.access_scripts import sql, opm, schemas
+```
+However, `access.py` contains functions that have been used for downloading and uploading data (from various URLs to MariaDB, using PyMySql) that the reader might find easier to use as they abstract away some constants:
+1. `load_gov_data(connection, gov_url)` loads all UK Price Paid data, from 2021 to 1995. It downloads each `csv` file and uploads it to MariaDB. 
+2. `load_postcode_data(connection, postcode_url)` loads all postcode data in the UK. It does this in a similar manner with the function above.
+3. `table_head(connection, table_name, limit=5)` loads the head of an SQL table. This is useful for checking that a table has been loaded successfully.
 
-Legal complications around data are still a major barrier though. In the EU and the US database schema and indices are subject to copyright law. Companies making data available often require license fees. As many data sources are combined, the composite effect of the different license agreements often makes the legal challenges insurmountable. This was a common challenge in the pandemic, where academics who were capable of dealing with complex data predictions were excluded from data access due to challenges around licensing. A nice counter example was the work led by Nuria Oliver in Spain who after a call to arms in a national newspaper  was able to bring the ecosystem together around mobility data.
-
-However, even when organisation is fully digital, and license issues are overcome, there are issues around how the data is managed stored, accessed. The discoverability of the data and the recording of its provenance are too often neglected in the process of digtial transformation. Further, once an organisation has gone through digital transformation, they begin making predictions around the data. These predictions are data themselves, and their presence in the data ecosystem needs recording. Automating this portion requires structured thinking around our data ecosystems.
+Among the other functions that the reader will find in this file, three are of special interest:
+1. `region_data` returns a pandas dataframe with all the house data (including coordinates) from a particular region. For example:```cambridge = access.region_data(connecion, '2021-01-01', '2021-12-31', 'town_city', 'Cambridge')``` will return all houses that have been sold in Cambridge over the past year.
+2. `box_data` returns returns all of the houses of a particular property type with coordinates a bounding box. 
+3. `pois_data` returns all POIs (points of interest) with the given tags for a bouding box from OpenStreetMap.
 
 ## Assess
 
