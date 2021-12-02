@@ -1,27 +1,67 @@
-# Fynesse Template
+# UK Housing Prices Predictor
+This project is part of the Advanced Data Science Course for Part II of the Computer Science Tripos at the University of Cambridge. This predictor builds a Generalized Linear Model on the fly using coordinate data as well as points of interest around these coordinates from OpenStreetMap to fit the parameters. 
 
-This repo provides a python template repo for doing data analysis according to the Fynesse framework.
-
-One challenge for data science and data science processes is that they do not always accommodate the real-time and evolving nature of data science advice as required, for example in pandemic response or in managing an international supply chain. The Fynesse paradigm is inspired by experience in operational data science both in the Amazon supply chain and in the UK Covid-19 pandemic response.
-
-The Fynesse paradigm considers three aspects to data analysis, Access, Assess, Address. 
+The project structure follows the fynesse template, as seen in the tree below. 
+```
+fynesse            
+├─ access_scripts  
+│  ├─ __init__.py  
+│  ├─ opm.py       
+│  ├─ schemas.py   
+│  └─ sql.py      
+|
+├─ __init__.py     
+├─ access.py       
+├─ address.py      
+├─ assess.py
+|
+├─ config.py       
+└─ defaults.yml    
+```
 
 ## Access
 
-Gaining access to the data, including overcoming availability challenges (data is distributed across architectures, called from an obscure API, written in log books) as well as legal rights (for example intellectual property rights) and individual privacy rights (such as those provided by the GDPR).
+The `access` module is composed of a main file, called `access.py`, and an additional folder `access_scripts` that contains code for SQL queries to MariaDB and OpenStreetMap queries. In addition, `schemas.py` contains various constants used in these queries, such as column names for SQL tables and table creation code.
 
-It seems a great challenge to automate all the different aspects of the process of data access, but this challenge is underway already through the process of what is commonly called *digital transformation*. The process of digital transformation takes data away from physical log books and into digital devices. But that transformation process itself comes with challenges. 
+Functions in `access_scripts` can be accessed on their own by importing the right module:
+```
+from fynesse.access_scripts import sql, opm, schemas
+```
+However, `access.py` contains functions that have been used for downloading and uploading data (from various URLs to MariaDB, using PyMySql) that the reader might find easier to use as they abstract away some constants:
+1. `load_gov_data(connection, gov_url)` loads all UK Price Paid data, from 2021 to 1995. It downloads each `csv` file and uploads it to MariaDB. 
+2. `load_postcode_data(connection, postcode_url)` loads all postcode data in the UK. It does this in a similar manner with the function above.
+3. `table_head(connection, table_name, limit=5)` loads the head of an SQL table. This is useful for checking that a table has been loaded successfully.
 
-Legal complications around data are still a major barrier though. In the EU and the US database schema and indices are subject to copyright law. Companies making data available often require license fees. As many data sources are combined, the composite effect of the different license agreements often makes the legal challenges insurmountable. This was a common challenge in the pandemic, where academics who were capable of dealing with complex data predictions were excluded from data access due to challenges around licensing. A nice counter example was the work led by Nuria Oliver in Spain who after a call to arms in a national newspaper  was able to bring the ecosystem together around mobility data.
-
-However, even when organisation is fully digital, and license issues are overcome, there are issues around how the data is managed stored, accessed. The discoverability of the data and the recording of its provenance are too often neglected in the process of digtial transformation. Further, once an organisation has gone through digital transformation, they begin making predictions around the data. These predictions are data themselves, and their presence in the data ecosystem needs recording. Automating this portion requires structured thinking around our data ecosystems.
+Among the other functions that the reader will find in this file, three are of special interest:
+1. `region_data` returns a pandas dataframe with all the house data (including coordinates) from a particular region. For example:```cambridge = access.region_data(connecion, '2021-01-01', '2021-12-31', 'town_city', 'Cambridge')``` will return all houses that have been sold in Cambridge over the past year.
+2. `box_data` returns returns all of the houses of a particular property type with coordinates a bounding box. 
+3. `pois_data` returns all POIs (points of interest) with the given tags for a bouding box from OpenStreetMap.
 
 ## Assess
 
-Understanding what is in the data. Is it what it's purported to be, how are missing values encoded, what are the outliers, what does each variable represent and how is it encoded.
+The `assess` module contains functions that check the validity of the values in the data and plot various graphs that help with exploratory data analysis. Among the functions, three have been the most useful in this project:
+1. `assess_houses` checks that some columns are that are necessary for data analysis do not contain `NaN` values 
+2. `assess_pois` checks that whether POIs exist for all given tags and computes the total number of POIs per house
+3. `draw_correlation` fits a line to a dataset and prints both a plot and the pearson correlation of the `xs` and `ys`.
 
-Data that is accessible can be imported (via APIs or database calls or reading a CSV) into the machine and work can be done understanding the nature of the data. The important thing to say about the assess aspect is that it only includes things you can do *without* the question in mind. This runs counter to many ideas about how we do data analytics. The history of statistics was that we think of the question *before* we collect data. But that was because data was expensive, and it needed to be excplicitly collected. The same mantra is true today of *surveillance data*. But the new challenge is around *happenstance data*, data that is cheaply available but may be of poor quality. The nature of the data needs to be understood before its integrated into analysis. Unfortunately, because the work is conflated with other aspects, decisions are sometimes made during assessment (for example approaches to imputing missing values) which may be useful in one context, but are useless in others. So the aim in *assess* is to only do work that is repeatable, and make that work available to others who may also want to use the data.
-
+The assess module was used to "see" how the data looks like; what are the differences between types of properties, what POIs influence house prices most. This modules has helped make decision about the parameters of the model - for example, in this module I have decided to use the Poisson family for my GLM. 
 ## Address
+The address module contains a main function:
+```
+prediction, model = predict_price(conn, latitude, longitude, date, property_type)
+```
 
-The final aspect of the process is to *address* the question. We'll spend the least time on this aspect here, because it's the one that is most widely formally taught and the one that most researchers are familiar with. In statistics, this might involve some confirmatory data analysis. In machine learning it may involve designing a predictive model. In many domains it will involve figuring out how best to visualise the data to present it to those who need to make the decisions. That could involve a dashboard, a plot or even summarisation in an Excel spreadsheet.
+This function builds a model on the fly, using all houses of the same `property_type` surrounding `(latitude, longitude)`. The steps it takes are the following:
+1. It joins housing data and postcode data to find the coordinates of all houses in a given bouding box
+2. It extracts all POIs of interest for each house 
+3. It encodes the coordinate information and the POIs into a matrix of features 
+4. It splits the dataset into the training set and the validation set
+5. It trains the model 
+6. It validates the model, by plotting the difference between the predicted prices and the actual prices
+7. It return the model and a prediction 
+
+All other functions in this module are functions that implement the steps above.
+
+## Testing
+
+Due to the nature of the task, I have considered unit tests to be unnecessary, as the data and the functions that process it go hand in hand. Writing this fynesse module has been in itself an iterative process, in which edge cases caused by the data itself have appeared at all moments. 
