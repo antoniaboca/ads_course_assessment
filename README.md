@@ -39,10 +39,25 @@ Among the other functions that the reader will find in this file, three are of s
 
 ## Assess
 
-Understanding what is in the data. Is it what it's purported to be, how are missing values encoded, what are the outliers, what does each variable represent and how is it encoded.
+The `assess` module contains functions that check the validity of the values in the data and plot various graphs that help with exploratory data analysis. Among the functions, three have been the most useful in this project:
+1. `assess_houses` checks that some columns are that are necessary for data analysis do not contain `NaN` values 
+2. `assess_pois` checks that whether POIs exist for all given tags and computes the total number of POIs per house
+3. `draw_correlation` fits a line to a dataset and prints both a plot and the pearson correlation of the `xs` and `ys`.
 
-Data that is accessible can be imported (via APIs or database calls or reading a CSV) into the machine and work can be done understanding the nature of the data. The important thing to say about the assess aspect is that it only includes things you can do *without* the question in mind. This runs counter to many ideas about how we do data analytics. The history of statistics was that we think of the question *before* we collect data. But that was because data was expensive, and it needed to be excplicitly collected. The same mantra is true today of *surveillance data*. But the new challenge is around *happenstance data*, data that is cheaply available but may be of poor quality. The nature of the data needs to be understood before its integrated into analysis. Unfortunately, because the work is conflated with other aspects, decisions are sometimes made during assessment (for example approaches to imputing missing values) which may be useful in one context, but are useless in others. So the aim in *assess* is to only do work that is repeatable, and make that work available to others who may also want to use the data.
-
+The assess module was used to "see" how the data looks like; what are the differences between types of properties, what POIs influence house prices most. This modules has helped make decision about the parameters of the model - for example, in this module I have decided to use the Poisson family for my GLM. 
 ## Address
+The address module contains a main function:
+```
+prediction, model = predict_price(conn, latitude, longitude, date, property_type)
+```
 
-The final aspect of the process is to *address* the question. We'll spend the least time on this aspect here, because it's the one that is most widely formally taught and the one that most researchers are familiar with. In statistics, this might involve some confirmatory data analysis. In machine learning it may involve designing a predictive model. In many domains it will involve figuring out how best to visualise the data to present it to those who need to make the decisions. That could involve a dashboard, a plot or even summarisation in an Excel spreadsheet.
+This function builds a model on the fly, using all houses of the same `property_type` surrounding `(latitude, longitude)`. The steps it takes are the following:
+1. It joins housing data and postcode data to find the coordinates of all houses in a given bouding box
+2. It extracts all POIs of interest for each house 
+3. It encodes the coordinate information and the POIs into a matrix of features 
+4. It splits the dataset into the training set and the validation set
+5. It trains the model 
+6. It validates the model, by plotting the difference between the predicted prices and the actual prices
+7. It return the model and a prediction 
+
+All other functions in this module are functions that implement the steps above. 
